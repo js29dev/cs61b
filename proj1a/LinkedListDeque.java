@@ -31,6 +31,17 @@ public class LinkedListDeque<AnyType> {
         size = 1;
     }
 
+    public LinkedListDeque(LinkedListDeque other) {
+        sentinel = new AnyNode(null, (AnyType) "null", null);
+        sentinel.prev = sentinel;
+        sentinel.next = sentinel.prev;
+        size = 0;
+
+        for (int i = 0; i < other.size(); i++) {
+            addLast((AnyType) other.get(i));
+        }
+    }
+
     public void addFirst(AnyType x) {
         AnyNode helperNext = sentinel.next;
         sentinel.next = new AnyNode(sentinel.next, x, sentinel.next.next);
@@ -92,12 +103,40 @@ public class LinkedListDeque<AnyType> {
         return lastToBeRemoved.item;
     }
 
+    public AnyType get(int index) {
+        if (index >= size) return null;
+
+        AnyNode helperFirst = sentinel.next;
+        int i = 0;
+        while (index > i) {
+            helperFirst = helperFirst.next;
+            i += 1;
+        }
+        return helperFirst.item;
+    }
+
+    public AnyType getRecursive(int index) {
+        if (index >= size) return null;
+
+        if (index == 0) {
+            return sentinel.next.item;
+        } else if (index == size() - 1) {
+            return sentinel.prev.item;
+        } else {
+            LinkedListDeque<AnyType> copy = new LinkedListDeque<>(this);
+            copy.removeFirst();
+            return copy.getRecursive(index - 1);
+        }
+
+    }
+
     public static void main(String[] args) {
         LinkedListDeque<Integer> test = new LinkedListDeque<>(5);
         test.addFirst(20);
         test.addLast(50);
+        test.addLast(100);
         test.printDeque();
-        System.out.println("Removed: " + test.removeLast());
+        System.out.println(test.getRecursive(2));
         test.printDeque();
     }
 
