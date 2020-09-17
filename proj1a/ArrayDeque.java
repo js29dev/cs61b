@@ -158,19 +158,6 @@ public class ArrayDeque<AnyType> {
             a.addFirst(i);
             i += 1;
         }
-
-        a.printDeque();
-        System.out.println(a.getLength());
-        System.out.println(a.getRatio());
-        System.out.println(a.removeLast());
-        System.out.println(a.removeLast());
-        System.out.println(a.removeLast());
-        System.out.println(a.removeLast());
-        System.out.println(a.removeLast());
-        a.printDeque();
-        System.out.println(a.getLength());
-        System.out.println(a.getRatio());
-        System.out.println(a.removeLast());
     }
 
 }
