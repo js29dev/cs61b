@@ -1,16 +1,15 @@
 package creatures;
+import huglife.*;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.awt.*;
 import java.util.HashMap;
-import java.awt.Color;
-import huglife.Direction;
-import huglife.Action;
-import huglife.Occupant;
-import huglife.Impassible;
-import huglife.Empty;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /** Tests the plip class
- *  @authr FIXME
+ *  @authr JOHN
  */
 
 public class TestPlip {
@@ -32,10 +31,16 @@ public class TestPlip {
 
     @Test
     public void testReplicate() {
-        // TODO
+        Plip mother = new Plip(2);
+        Plip son = mother.replicate();
+        double motherEnergy = mother.energy();
+        double sonEnergy = son.energy();
+        assertEquals(1.0, motherEnergy, 0.1);
+        assertEquals(1.0, sonEnergy, 0.1);
+
     }
 
-    //@Test
+    @Test
     public void testChoose() {
 
         // No empty adjacent spaces; stay.
