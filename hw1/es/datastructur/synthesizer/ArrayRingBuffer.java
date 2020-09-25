@@ -1,11 +1,7 @@
 package es.datastructur.synthesizer;
 import java.util.Iterator;
 
-//TODO: Make sure to that this class and all of its methods are public
-//TODO: Make sure to add the override tag for all overridden methods
-//TODO: Make sure to make this class implement BoundedQueue<T>
-
-public class ArrayRingBuffer<T>  {
+public class ArrayRingBuffer<T>  implements BoundedQueue<T>{
     /* Index for the next dequeue or peek. */
     private int first;
     /* Index for the next enqueue. */
@@ -19,8 +15,40 @@ public class ArrayRingBuffer<T>  {
      * Create a new ArrayRingBuffer with the given capacity.
      */
     public ArrayRingBuffer(int capacity) {
-        // TODO: Create new array with capacity elements.
-        //       first, last, and fillCount should all be set to 0.
+        rb = (T []) new Object[capacity];
+        first = 0;
+        last = 0;
+        fillCount = 0;
+    }
+
+    private class RBIterator implements Iterator<T> {
+        private int pos;
+
+        public RBIterator() {
+            pos = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return pos < capacity();
+        }
+
+        @Override
+        public T next() {
+            T returnItem = rb[pos];
+            pos += 1;
+            return returnItem;
+        }
+    }
+
+    @Override
+    public int capacity() {
+        return rb.length;
+    }
+
+    @Override
+    public int fillCount() {
+        return fillCount;
     }
 
     /**
@@ -28,9 +56,15 @@ public class ArrayRingBuffer<T>  {
      * throw new RuntimeException("Ring buffer overflow").
      */
     public void enqueue(T x) {
-        // TODO: Enqueue the item. Don't forget to increase fillCount and update
-        //       last.
-        return;
+        if (isFull()) {
+            throw new RuntimeException("Ring buffer overflow");
+        }
+        rb[last] = x;
+        fillCount += 1;
+        last += 1;
+        if (last == capacity()) {
+            last = 0;
+        }
     }
 
     /**
@@ -38,22 +72,76 @@ public class ArrayRingBuffer<T>  {
      * throw new RuntimeException("Ring buffer underflow").
      */
     public T dequeue() {
-        // TODO: Dequeue the first item. Don't forget to decrease fillCount and
-        //       update first.
-        return null;
+        if (isEmpty()) {
+            throw new RuntimeException("Ring buffer underflow");
+        }
+
+        T returnValue = rb[first];
+        rb[first] = null;
+        first += 1;
+        fillCount -= 1;
+        if (first == capacity()) {
+            first = 0;
+        }
+        return returnValue;
     }
 
     /**
      * Return oldest item, but don't remove it. If the buffer is empty, then
      * throw new RuntimeException("Ring buffer underflow").
      */
+    @Override
     public T peek() {
-        // TODO: Return the first item. None of your instance variables should
-        //       change.
-        return null;
+        if (isEmpty()) {
+            throw new RuntimeException("Ring buffer underflow");
+        }
+
+        return rb[first];
     }
 
-    // TODO: When you get to part 4, implement the needed code to support
-    //       iteration and equals.
+    public boolean contains(T item) {
+        for (int i = 0; i < capacity(); i ++) {
+            if (rb[i].equals(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public T get(int i) {
+        return rb[i];
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new RBIterator();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null) {
+            return false;
+        }
+
+        if (!(o instanceof ArrayRingBuffer)){
+            return false;
+        }
+
+        ArrayRingBuffer<T> compared = (ArrayRingBuffer<T>) o;
+        if (this.capacity() != compared.capacity()) {
+            return false;
+        }
+
+        for (int i = 0; i < capacity(); i++) {
+            if (this.get(i) != compared.get(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
-    // TODO: Remove all comments that say TODO when you're done.
+
